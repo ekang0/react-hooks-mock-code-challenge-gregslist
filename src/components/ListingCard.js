@@ -1,21 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 
-function ListingCard() {
+function ListingCard( { listing, handleRemoveListing } ) {
+  const [favState, setFavState] = useState(true);
+  //console.log(listing);
+  const {id, description, image, location} = listing ;
+
+  function handleFavState() {
+    setFavState(!favState)
+  };
+  
+  function onDeleteClick(){
+    fetch(`http://localhost:6001/listings/${id}`, {
+      method: "DELETE",
+    });
+    handleRemoveListing(id)
+  };
+
   return (
     <li className="card">
       <div className="image">
         <span className="price">$0</span>
-        <img src={"https://via.placeholder.com/300x300"} alt={"description"} />
+        <img src={image} alt={description} />
       </div>
       <div className="details">
-        {true ? (
-          <button className="emoji-button favorite active">★</button>
+        {favState ? (
+          <button onClick={handleFavState} className="emoji-button favorite active">★</button>
         ) : (
-          <button className="emoji-button favorite">☆</button>
+          <button onClick={handleFavState} className="emoji-button favorite">☆</button>
         )}
-        <strong>{"description"}</strong>
-        <span> · {"location"}</span>
-        <button className="emoji-button delete">🗑</button>
+        <strong>{description}</strong>
+        <span> · {location}</span>
+        <button className="emoji-button delete" onClick={onDeleteClick}>🗑</button>
       </div>
     </li>
   );
